@@ -115,7 +115,7 @@ def get_phase_info(contents, view_settings=None, pretty_print=True):
     phase_dates = {}
 
     for phase in range(1, 5):
-        match = re.search(rf'Phase {phase} took ([\d\.]+) sec\n', contents, flags=re.I)
+        match = re.search(rf'Phase {phase} took ([\d\.]+) sec', contents, flags=re.I)
         if match:
             seconds = match.groups()[0]
             seconds = float(seconds)
