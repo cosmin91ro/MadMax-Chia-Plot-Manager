@@ -117,10 +117,11 @@ def get_phase_info(contents, view_settings=None, pretty_print=True):
     for phase in range(1, 5):
         match = re.search(rf'Phase {phase} took ([\d\.]+) sec\n', contents, flags=re.I)
         if match:
-            seconds, date_raw = match.groups()
+            seconds = match.groups()[0]
             seconds = float(seconds)
             phase_times[phase] = pretty_print_time(int(seconds), view_settings['include_seconds_for_phase']) if pretty_print else seconds
-            parsed_date = dateparser.parse(date_raw)
+            import datetime
+            parsed_date = datetime.datetime(1970, 1, 1, 0, 0) # dateparser.parse(date_raw)
             phase_dates[phase] = parsed_date
 
     return phase_times, phase_dates

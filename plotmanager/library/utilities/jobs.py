@@ -144,7 +144,7 @@ def load_jobs(config_jobs):
 
 def determine_job_size(k_size):
     try:
-        k_size = int(k_size)
+        k_size = 32 # int(k_size)
     except ValueError:
         return 0
     base_k_size = 32
