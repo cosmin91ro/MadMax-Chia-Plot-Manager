@@ -44,7 +44,9 @@ def is_windows():
 
 
 def get_chia_executable_name():
-    return f'chia{".exe" if is_windows() else ""}'
+    # return f'chia{".exe" if is_windows() else ""}'
+    return f'chia_plot{".exe" if is_windows() else ""}'
+
 
 
 def get_plot_k_size(commands):
@@ -58,13 +60,16 @@ def get_plot_k_size(commands):
 def get_plot_directories(commands):
     try:
         temporary_index = commands.index('-t') + 1
-        destination_index = commands.index('-d') + 1
     except ValueError:
         return None, None, None
     try:
+        destination_index = commands.index('-d') + 1
+    except ValueError:
+        destination_index = temporary_index
+    try:
         temporary2_index = commands.index('-2') + 1
     except ValueError:
-        temporary2_index = None
+        temporary2_index = temporary_index
     temporary_directory = commands[temporary_index]
     destination_directory = commands[destination_index]
     temporary2_directory = None
@@ -145,7 +150,7 @@ def get_plot_id(file_path=None, contents=None):
         contents = f.read()
         f.close()
 
-    match = re.search(rf'^ID: (.*?)$', contents, flags=re.M)
+    match = re.search(r'^Plot Name: plot-k32-\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-(.*?)$', contents, flags=re.M)
     if match:
         return match.groups()[0]
     return None
@@ -175,23 +180,12 @@ def get_running_plots(jobs, running_work, instrumentation_settings):
     logging.info(f'Getting running plots')
     chia_executable_name = get_chia_executable_name()
     for process in psutil.process_iter():
+        # logging.debug(f"Checking process {process.name()}")
         try:
-            if chia_executable_name not in process.name() and 'python' not in process.name().lower():
+            if chia_executable_name not in process.name():  # and 'python' not in process.name().lower():
                 continue
         except (psutil.AccessDenied, psutil.NoSuchProcess):
             continue
-        try:
-            if 'plots' not in process.cmdline() or 'create' not in process.cmdline():
-                continue
-        except (psutil.ZombieProcess, psutil.NoSuchProcess):
-            continue
-        if process.parent():
-            try:
-                parent_commands = process.parent().cmdline()
-                if 'plots' in parent_commands and 'create' in parent_commands:
-                    continue
-            except (psutil.AccessDenied, psutil.ZombieProcess):
-                pass
         logging.info(f'Found chia plotting process: {process.pid}')
         datetime_start = datetime.fromtimestamp(process.create_time())
         chia_processes.append([datetime_start, process])

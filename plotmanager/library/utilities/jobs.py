@@ -301,19 +301,15 @@ def start_work(job, chia_location, log_directory, drives_free_space):
         temporary2_directory = destination_directory
     logging.info(f'Job temporary2 directory: {temporary2_directory}')
 
-    plot_command = plots.create(
+    plot_command = plots.madmaxCreate(
         chia_location=chia_location,
         farmer_public_key=job.farmer_public_key,
         pool_public_key=job.pool_public_key,
-        size=job.size,
-        memory_buffer=job.memory_buffer,
         temporary_directory=temporary_directory,
         temporary2_directory=temporary2_directory,
         destination_directory=destination_directory,
         threads=job.threads,
         buckets=job.buckets,
-        bitfield=job.bitfield,
-        exclude_final_directory=job.exclude_final_directory,
     )
     logging.info(f'Starting with plot command: {plot_command}')
 

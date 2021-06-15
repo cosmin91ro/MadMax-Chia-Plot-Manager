@@ -15,15 +15,17 @@ def get_log_file_name(log_directory, job, datetime):
 
 
 def _analyze_log_end_date(contents):
-    match = re.search(r'total time = ([\d\.]+) seconds\. CPU \([\d\.]+%\) [A-Za-z]+\s([^\n]+)\n', contents, flags=re.I)
+    # match = re.search(r'total time = ([\d\.]+) seconds\. CPU \([\d\.]+%\) [A-Za-z]+\s([^\n]+)\n', contents, flags=re.I)
+    match = re.search(r'Total plot creation time was ([\d\.]+) sec', contents, flags=re.I)
+
     if not match:
         return False
-    total_seconds, date_raw = match.groups()
+    total_seconds = match.groups()[0]
     total_seconds = pretty_print_time(int(float(total_seconds)))
-    parsed_date = dateparser.parse(date_raw)
+    # parsed_date = dateparser.parse(date_raw)
     return dict(
         total_seconds=total_seconds,
-        date=parsed_date,
+        date=None,
     )
 
 
@@ -33,7 +35,7 @@ def _get_date_summary(analysis):
         if analysis['files'][file_path]['checked']:
             continue
         analysis['files'][file_path]['checked'] = True
-        end_date = analysis['files'][file_path]['data']['date'].date()
+        end_date = analysis['files'][file_path]['data']['date'].date() if analysis['files'][file_path]['data']['date'] is not None else None
         if end_date not in summary:
             summary[end_date] = 0
         summary[end_date] += 1
@@ -61,7 +63,8 @@ def get_completed_log_files(log_directory, skip=None):
         except UnicodeDecodeError:
             continue
         f.close()
-        if 'Total time = ' not in contents:
+        # if 'Total time = ' not in contents:
+        if 'Total plot creation time' not in contents:
             continue
         files[file_path] = contents
     return files
@@ -112,7 +115,7 @@ def get_phase_info(contents, view_settings=None, pretty_print=True):
     phase_dates = {}
 
     for phase in range(1, 5):
-        match = re.search(rf'time for phase {phase} = ([\d\.]+) seconds\. CPU \([\d\.]+%\) [A-Za-z]+\s([^\n]+)\n', contents, flags=re.I)
+        match = re.search(rf'Phase {phase} took ([\d\.]+) sec\n', contents, flags=re.I)
         if match:
             seconds, date_raw = match.groups()
             seconds = float(seconds)
@@ -136,7 +139,7 @@ def get_progress(line_count, progress_settings):
     if line_count > phase1_line_end:
         progress += phase1_weight
     else:
-        progress += phase1_weight * (line_count / phase1_line_end)
+        progress += phase1_weight * ((7 - phase1_line_end + line_count) / phase1_line_end)
         return progress
     if line_count > phase2_line_end:
         progress += phase2_weight
