@@ -188,8 +188,10 @@ def monitor_jobs_to_start(jobs, running_work, max_concurrent, max_for_phase_1, n
     logging.info(f'Free space after checking active jobs: {drives_free_space}')
 
     logging.info(f"Checking for zombie processes")
-    for work in running_work.values:
-        work.process.poll()
+    for work in running_work.values():
+        #logging.debug(work)
+        if work.process != None:        
+            work.process.poll()
 
     total_phase_1_count = 0
     for pid in running_work.keys():
