@@ -187,6 +187,10 @@ def monitor_jobs_to_start(jobs, running_work, max_concurrent, max_for_phase_1, n
         logging.info(drive)
     logging.info(f'Free space after checking active jobs: {drives_free_space}')
 
+    logging.info(f"Checking for zombie processes")
+    for work in running_work.values:
+        work.process.poll()
+
     total_phase_1_count = 0
     for pid in running_work.keys():
         if running_work[pid].current_phase > 1:
@@ -328,6 +332,7 @@ def start_work(job, chia_location, log_directory, drives_free_space):
         logging.info(f'Set process cpu affinity')
 
     work.pid = pid
+    work.process = process
     job.total_running += 1
     job.total_kicked_off += 1
     job.running_work = job.running_work + [pid]

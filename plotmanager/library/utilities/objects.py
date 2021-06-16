@@ -43,6 +43,7 @@ class Work:
     work_id = None
     job = None
     pid = None
+    process = None
     plot_id = None
     log_file = None
 

@@ -133,3 +133,4 @@ config.yaml
 *.bak
 
 .idea
+tests.py
