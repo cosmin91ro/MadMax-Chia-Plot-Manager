@@ -5,7 +5,7 @@ from plotmanager.library.utilities.commands import start_manager, stop_manager, 
 
 import logging
 
-logging.basicConfig(filname="viewer.log", format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
+logging.basicConfig(filename="viewer.log", format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
 
 parser = argparse.ArgumentParser(description='This is the central manager for Swar\'s Chia Plot Manager.')
 
