@@ -1,17 +1,17 @@
 # Swar's Chia Plot Manager 
 
-#### A plot manager for Chia plotting: https://www.chia.net/
-[English](README.md) / [Русский](README.RU.md)
+#### A plot manager for MadMax Chia plotter: https://github.com/madMAx43v3r/chia-plotter
 
 ![The view of the manager](https://i.imgur.com/hIhjXt0.png "View")
 
 ##### Development Version: v0.1.0
 
-This is a cross-platform Chia Plot Manager that will work on the major operating systems. This is not a plotter. The purpose of this library is to manage your plotting and kick off new plots with the settings that you configure. Everyone's system is unique so customization is an important feature that was engraved into this library.
+This is a fork of the [Swar manager](https://github.com/swar/Swar-Chia-Plot-Manager) and adjusted to work with the new MadMax plotter.
+Even though parallel plotting with MadMax doesn't make too much sense, since it is using all resources it can get during all plotting phases, you can still do some minimal adjustments in order to such all the juice from your system.
 
-This library is simple, easy-to-use, and reliable to keep the plots generating.
-
-This library has been tested for Windows and Linux.
+* This is a functional but WIP project
+* Some features are useless given the new plotter, feel free to get rid of those
+* Don't take as granted all you read here and in the config.yaml.default, I didn't updated the documentation yet
 
 
 ## Features
@@ -27,10 +27,7 @@ This library has been tested for Windows and Linux.
 
 This library took a lot of time and effort in order to get it before you today. Consider sponsoring or supporting the library. This is not necessary but more a kind gestures.
 
-* XCH Address: xch134evwwqkq50nnsmgehnnag4gc856ydc7ached3xxr6jdk7e8l4usdnw39t
-* ETH Address: 0xf8F7BD24B94D75E54BFD9557fF6904DBE239322E
-* BTC Address: 36gnjnHqkttcBiKjjAekoy68z6C3BJ9ekS
-* Paypal: https://www.paypal.com/biz/fund?id=XGVS7J69KYBTY
+* XCH Address: xch149dvfkr66h9mut6gmwrfz477q5y5gcc740svy5jwlppjqac903sqvpvf08
 
 
 ## Support / Questions
@@ -39,8 +36,6 @@ Please do not use GitHub issues for questions or support regarding your own pers
 * Discord Server: https://discord.gg/XyvMzeQpu2
     * This is the Official Discord Server - Swar's Chia Community 
 * Official Chia Keybase Team: https://keybase.io/team/chia_network.public
-    * The channel is #swar 
-* GitHub Discussion Board: https://github.com/swar/Swar-Chia-Plot-Manager/discussions
 
 
 ## Frequently Asked Questions
@@ -141,11 +136,10 @@ This plot manager works based on the idea of jobs. Each job will have its own se
 
 ### chia_location
 
-This is a single variable that should contain the location of your chia executable file. This is the blockchain executable.
+This is a single variable that should contain the location of your chia_plot executable file.
 
-* Windows Example: `C:\Users\<USERNAME>\AppData\Local\chia-blockchain\app-1.1.2\resources\app.asar.unpacked\daemon\chia.exe`
-* Linux Example: `/usr/lib/chia-blockchain/resources/app.asar.unpacked/daemon/chia`
-* Another Linux Example: `/home/swar/chia-blockchain/venv/bin/chia`
+* Windows Example: `C:\Users\<USERNAME>\chia-plotter\chia_plot.exe`
+* Linux Example: `/usr/lib/chia-plotter/build/chia_plot`
 
 ### manager
 
@@ -202,20 +196,18 @@ Each job must have unique temporary directories.
 
 These are the settings that will be used by each job. Please note you can have multiple jobs and each job should be in YAML format in order for it to be interpreted correctly. Almost all the values here will be passed into the Chia executable file. 
 
-Check for more details on the Chia CLI here: https://github.com/Chia-Network/chia-blockchain/wiki/CLI-Commands-Reference
+Check for more details on the MadMax Plotter CLI here: https://github.com/madMAx43v3r/chia-plotter
 
 * `name` - This is the name that you want to give to the job.
 * `max_plots` - This is the maximum number of jobs to make in one run of the manager. Any restarts to manager will reset this variable. It is only here to help with short term plotting.
-* [OPTIONAL]`farmer_public_key` - Your farmer public key. If none is provided, it will not pass in this variable to the chia executable which results in your default keys being used. This is only needed if you have chia set up on a machine that does not have your credentials.
-* [OPTIONAL]`pool_public_key` - Your pool public key. Same information as the above. 
+* `farmer_public_key` - Your farmer public key. If none is provided, it will not pass in this variable to the chia executable which results in your default keys being used. This is only needed if you have chia set up on a machine that does not have your credentials.
+* `pool_public_key` - Your pool public key. Same information as the above. 
 * `temporary_directory` - Can be a single value or a list of values. This is where the plotting will take place. If you provide a list, it will cycle through each drive one by one. These directories must be unique from one another.
-* [OPTIONAL]`temporary2_directory` - Can be a single value or a list of values. This is an optional parameter to use in case you want to use the temporary2 directory functionality of Chia plotting.
+* [OPTIONAL]`temporary2_directory` - Can be a single value or a list of values. This is an optional parameter. if not provided, `temporary_directory` will be used 
 * `destination_directory` - Can be a single value or a list of values. This is the final directory where the plot will be transferred once it is completed. If you provide a list, it will cycle through each drive one by one.  
 * `size` - This refers to the k size of the plot. You would type in something like 32, 33, 34, 35... in here.
-* `bitfield` - This refers to whether you want to use bitfield or not in your plotting. Typically, you want to keep this as true.
 * `threads` - This is the number of threads that will be assigned to the plotter. Only phase 1 uses more than 1 thread.
 * `buckets` - The number of buckets to use. The default provided by Chia is 128.
-* `memory_buffer` - The amount of memory you want to allocate to the process.
 * `max_concurrent` - The maximum number of plots to have for this job at any given time.
 * `max_concurrent_with_start_early` - The maximum number of plots to have for this job at any given time including phases that started early.
 * `initial_delay_minutes` - This is the initial delay that is used when initiate the first job. It is only ever considered once. If you restart manager, it will still adhere to this value.
