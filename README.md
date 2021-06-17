@@ -1,4 +1,4 @@
-# Swar's Chia Plot Manager 
+# MadMax Chia Plot Manager 
 
 #### A plot manager for MadMax Chia plotter: https://github.com/madMAx43v3r/chia-plotter
 
@@ -7,7 +7,7 @@
 ##### Development Version: v0.1.0
 
 This is a fork of the [Swar manager](https://github.com/swar/Swar-Chia-Plot-Manager) and adjusted to work with the new MadMax plotter.
-Even though parallel plotting with MadMax doesn't make too much sense, since it is using all resources it can get during all plotting phases, you can still do some minimal adjustments in order to such all the juice from your system.
+Even though parallel plotting with MadMax doesn't make too much sense, since it is using all resources it can get during all plotting phases, you can still do some minimal adjustments in order to suck all the juice from your system.
 
 * This is a functional but WIP project
 * Some features are useless given the new plotter, feel free to get rid of those
