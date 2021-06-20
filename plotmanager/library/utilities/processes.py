@@ -45,7 +45,7 @@ def check_chia_dashboard_process():
     dashboard_process = None
     for process in psutil.process_iter():
         try:
-            if process.cmdline() and "/usr/local/bin/chia-dashboard-satellite" == process.cmdline()[-1]:
+            if process.cmdline() and "/chia-dashboard-satellite" in process.cmdline()[-1]:
                 dashboard_process = process
                 break
         except (psutil.NoSuchProcess, psutil.AccessDenied):
@@ -57,6 +57,8 @@ def check_chia_dashboard_process():
         dashboard_log_file = open(dashboard_log_file_path, 'a')
         if start_process(["chia-dashboard-satellite"], log_file=dashboard_log_file):
             logging.info("chia-dashboard-satellite started")
+    else:
+        logging.info("chia-dashboard-satellite already running")
 
 
 
