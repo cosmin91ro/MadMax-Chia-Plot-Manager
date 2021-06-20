@@ -7,6 +7,7 @@ from plotmanager.library.parse.configuration import get_config_info
 from plotmanager.library.utilities.jobs import has_active_jobs_and_work, load_jobs, monitor_jobs_to_start
 from plotmanager.library.utilities.log import check_log_progress
 from plotmanager.library.utilities.processes import get_running_plots, get_system_drives
+from plotmanager.library.utilities.processes import check_chia_dashboard_process
 
 
 chia_location, log_directory, config_jobs, manager_check_interval, max_concurrent, max_for_phase_1, \
@@ -103,6 +104,8 @@ while has_active_jobs_and_work(jobs):
         minimum_minutes_between_jobs=minimum_minutes_between_jobs,
         system_drives=system_drives,
     )
+
+    check_chia_dashboard_process()
 
     logging.info(f'Sleeping for {manager_check_interval} seconds.')
     time.sleep(manager_check_interval)
