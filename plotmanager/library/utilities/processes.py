@@ -45,7 +45,6 @@ def check_chia_dashboard_process():
     dashboard_process = None
     for process in psutil.process_iter():
         try:
-            print(process.name(), process.cmdline())
             if process.cmdline() and "/usr/local/bin/chia-dashboard-satellite" == process.cmdline()[-1]:
                 dashboard_process = process
                 break
@@ -54,7 +53,7 @@ def check_chia_dashboard_process():
     if dashboard_process is None:
         logging.info("No chia-dashboard-satellite process found, starting one ...")
         directory = pathlib.Path().resolve()
-        dashboard_log_file_path = os.path.join(directory, 'debug.log')
+        dashboard_log_file_path = os.path.join(directory, 'chia-dashboard-satellite.log')
         dashboard_log_file = open(dashboard_log_file_path, 'a')
         if start_process(["chia-dashboard-satellite"], log_file=dashboard_log_file):
             logging.info("chia-dashboard-satellite started")
