@@ -108,6 +108,7 @@ while has_active_jobs_and_work(jobs):
     check_chia_dashboard_process()
 
     logging.info(f'Sleeping for {manager_check_interval} seconds.')
+    logging.info("------------------------------------------------------------------------------------------------------------------")
     time.sleep(manager_check_interval)
 
 logging.info(f'Manager has exited loop because there are no more active jobs.')

@@ -1,3 +1,10 @@
+from os import listdir, remove
+from os.path import isfile, join
+import logging
+from datetime import datetime as dt
+
+logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
+
 def create(size, memory_buffer, temporary_directory, destination_directory, threads, buckets, bitfield,
            chia_location='chia', temporary2_directory=None, farmer_public_key=None, pool_public_key=None,
            exclude_final_directory=False):
@@ -54,3 +61,12 @@ def madmaxCreate(temporary_directory, temporary2_directory, destination_director
             continue
         data.append(str(value))
     return data
+
+
+def removeOldestPlot(path):
+    onlyfiles = [join(path, f) for f in listdir(path) if isfile(join(path, f)) and f.endswith(".plot")]
+    onlyfiles.sort()
+    logging.info(f"Removing {onlyfiles[0]}")
+    t1 = dt.now()
+    remove(onlyfiles[0])
+    logging.info(f"File removed. It took {dt.now() - t1}")

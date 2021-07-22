@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from plotmanager.library.commands import plots
 from plotmanager.library.utilities.exceptions import InvalidConfigurationSetting
-from plotmanager.library.utilities.processes import identify_drive, is_windows, start_process
+from plotmanager.library.utilities.processes import identify_drive, is_windows, start_process, get_system_drives
 from plotmanager.library.utilities.objects import Job, Work
 from plotmanager.library.utilities.log import get_log_file_name
 
@@ -138,6 +138,8 @@ def load_jobs(config_jobs):
         if job.enable_cpu_affinity:
             job.cpu_affinity = info['cpu_affinity']
 
+        job.remove_old_plots_if_destination_full = info.get("remove_old_plots_if_destination_full", False)
+
         jobs.append(job)
 
     return jobs
@@ -181,11 +183,13 @@ def monitor_jobs_to_start(jobs, running_work, max_concurrent, max_for_phase_1, n
     logging.info(f'Free space before checking active jobs: {drives_free_space}')
     for pid, work in running_work.items():
         drive = work.destination_drive
+        logging.debug(drive)
         if drive not in drives_free_space or drives_free_space[drive] is None:
+            logging.debug("continuing ...")
             continue
         work_size = determine_job_size(work.k_size)
+        logging.debug(work_size)
         drives_free_space[drive] -= work_size
-        logging.info(drive)
     logging.info(f'Free space after checking active jobs: {drives_free_space}')
 
     logging.info(f"Checking for zombie processes")
@@ -295,6 +299,14 @@ def start_work(job, chia_location, log_directory, drives_free_space):
     logging.info(f'Job temporary directory: {temporary_directory}')
     logging.info(f'Job destination directory: {destination_directory}')
 
+    system_drives = get_system_drives()
+    drive = identify_drive(file_path=destination_directory, drives=system_drives)
+    if drives_free_space[drive] < determine_job_size(32) and job.remove_old_plots_if_destination_full:
+        logging.info(f"Not enough free space left for new job on {drive}")
+        from threading import Thread
+        th = Thread(target=plots.removeOldestPlot, args=(drive,), daemon=False)
+        th.start()
+
     work = deepcopy(Work())
     work.job = job
     work.log_file = log_file_path
@@ -337,6 +349,7 @@ def start_work(job, chia_location, log_directory, drives_free_space):
 
     work.pid = pid
     work.process = process
+    work.destination_drive = drive
     job.total_running += 1
     job.total_kicked_off += 1
     job.running_work = job.running_work + [pid]

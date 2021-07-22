@@ -39,6 +39,7 @@ class Job:
     enable_cpu_affinity = False
     cpu_affinity = []
 
+    remove_old_plots_if_destination_full = False
 
 class Work:
     work_id = None
