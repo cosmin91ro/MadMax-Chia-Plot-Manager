@@ -30,7 +30,7 @@ def create(size, memory_buffer, temporary_directory, destination_directory, thre
     return data
 
 def madmaxCreate(temporary_directory, temporary2_directory, destination_directory, threads, buckets,
-           chia_location='chia_plot', farmer_public_key=None, pool_public_key=None):
+           chia_location='chia_plot', farmer_public_key=None, pool_public_key=None, pool_contract_address=None):
     flags = dict(
         t=temporary_directory,
         d=destination_directory,
@@ -43,6 +43,8 @@ def madmaxCreate(temporary_directory, temporary2_directory, destination_director
         flags['f'] = farmer_public_key
     if pool_public_key is not None:
         flags['p'] = pool_public_key
+    if pool_contract_address is not None:
+        flags['c'] = pool_contract_address
 
     data = [chia_location]
     for key, value in flags.items():
